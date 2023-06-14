@@ -246,10 +246,3 @@ Disclaimer
 There is no warranty, expressed or implied, associated with this product.
 Use at your own risk.
 
-
-Gerald Combs <gerald@wireshark.org>
-
-Gilbert Ramirez <gram@alumni.rice.edu>
-
-Guy Harris <gharris@sonic.net>
-# wireshark-quic
