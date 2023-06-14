@@ -1,0 +1,225 @@
+Wireshark 4.1.0 Release Notes
+
+ This is an experimental release intended to test new features for
+ Wireshark 4.2.
+
+ What is Wireshark?
+
+  Wireshark is the world’s most popular network protocol analyzer. It is
+  used for troubleshooting, analysis, development and education.
+
+ What’s New
+
+  Windows installer file names now have the format
+  Wireshark-<version>-<architecture>.exe.
+
+  Wireshark is now better about generating valid UTF-8 output.
+
+  A new display filter feature for filtering raw bytes has been added.
+
+  Display filter autocomplete is smarter about not suggesting invalid
+  syntax.
+
+  The Windows build has a new SpeexDSP external dependency
+  (https://www.speex.org). The speex code that was previously bundled
+  has been removed.
+
+  The personal extcap plugin folder location on Unix has been changed to
+  follow existing conventions for architecture-dependent files. The
+  extcap personal folder is now `$HOME/.local/lib/wireshark/extcap`.
+  Previously it was `$XDG_CONFIG_HOME/wireshark/extcap`.
+
+  The installation target no longer installs development headers by
+  default. That must be done explicitly using `cmake --install
+  <builddir> --component Development`.
+
+  The Wireshark installation is relocatable on Linux (and other ELF
+  platforms with support for relative RPATHs).
+
+  Support for building an NSIS Windows installer using the MinGW-w64
+  toolchain and MSYS2[1]. Read README.msys2 in the distribution for more
+  information.
+
+  When changing the dissector via the Decode As table for values that
+  have default dissectors registered, selecting "(none)" will select no
+  dissection (while still allowing heuristic dissectors to attempt to
+  dissect.) The previous behavior was to reset the dissector to the
+  default. To facilitate resetting the dissector, the default dissector
+  is now sorted at the top of the list of possible dissector options.
+
+  Many other improvements have been made. See the “New and Updated
+  Features” section below for more details.
+
+  Bug Fixes
+
+   The following bugs have been fixed:
+
+     • Issue 18413[2] - RTP player do not play audio frequently on Win32
+       builds with Qt6
+
+     • Issue 18510[3] - Playback marker do not move after unpause with
+       Qt6
+
+  New and Updated Features
+
+   The following features are new (or have been significantly updated)
+   since version 4.0.0:
+
+     • The API has been updated to ensure that the dissection engine
+       produces valid UTF-8 strings.
+
+     • Wireshark now builds with Qt6 by default. To use Qt5 instead pass
+       USE_qt6=OFF to CMake.
+
+     • It is now possible to filter on raw packet data for any field by
+       using the syntax `@some.field == <bytes…​>`. This can be useful
+       to filter on malformed UTF-8 strings, among other use cases where
+       it is necessary to look at the field’s raw data.
+
+     • Negation (unary minus) now works with any display filter
+       arithmetic expression.
+
+     • ciscodump support Cisco IOS XE 17.x
+
+     • The default interval between GUI updates when capturing has been
+       decreased from 500ms to 100ms, and is now configurable.
+
+     • The -n option also now disables IP address geolocation
+       information lookup in configured MaxMind databases (and
+       geolocation lookup can be enabled with -Ng.) This is most
+       relevant for tshark, where geolocation lookups are synchronous.
+
+     • Implement built-in dissector for FiRa UWB Controller Interface
+       (UCI) protocol. Recognizes PCAP traces with the link type
+       LINKTYPE_FIRA_UCI=299.
+
+     • The reassemble_streaming_data_and_call_subdissector() API has
+       been added to provide a simpler way to reassemble the streaming
+       data of a high level protocol that is not on top of TCP.
+
+     • The display filter drop-down list is now sorted by "most recently
+       used" instead of "most recently created".
+
+     • Running the test suite requires the pytest[4] Python module. The
+       emulation layer that allowed running tests without pytest
+       installed has been removed.
+
+  New Protocol Support
+
+   DECT DLC protocol layer (DECT-DLC), DECT NWK protocol layer
+   (DECT-NWK), DECT proprietary Mitel OMM/RFP Protocol (also named
+   AaMiDe), FiRa UWB Controller Interface (UCI), FiveCo’s Register
+   Access Protocol (5CoRAP), Low Level Signalling (ATSC3 LLS),
+   Management Component Transport Protocol (MCTP), Management Component
+   Transport Protocol - Control Protocol (MCTP CP), Matter home
+   automation protocol, Non-volatile Memory Express - Management
+   Interface (NVMe-MI) over MCTP, SAP Enqueue Server (SAPEnqueue), SAP
+   GUI (SAPDiag), SAP HANA SQL Command Network Protocol (SAPHDB), SAP
+   Internet Graphic Server (SAP IGS), SAP Message Server (SAPMS), SAP
+   Network Interface (SAPNI), SAP Router (SAPROUTER), SAP Secure Network
+   Connection (SNC), SBAS L1 Navigation Messages (SBAS L1), SINEC AP1
+   Protocol (SINEC AP), Support for almost all WoW 1.12 messages has
+   been added., Train Real-Time Data Protocol (TRDP), UBX protocol of
+   u-blox GNSS receivers (UBX), UDP Tracker Protocol for BitTorrent
+   (BT-Tracker), Windows Delivery Optimization (MS-DO), and World of
+   Warcraft World (WOWW) display filters have been changed to be more
+   internally consistent.
+
+  Updated Protocol Support
+
+     • The JSON dissector now has a preference to enable/disable
+       "unescaping" of string values. By default it is off. Previously
+       it was always on.
+
+     • The JSON dissector now supports "Display JSON in raw form".
+
+     • The IPv6 dissector has a new preference to show some semantic
+       details about addresses (default off).
+
+     • The XML dissector now supports display character according to the
+       "encoding" attribute of the XML declaration, and has a new
+       preference to set default character encoding for some XML
+       document without "encoding" attribute.
+
+     • The SIP dissector now has a new preference to set default charset
+       for displaying the body of SIP messages in raw text view.
+
+     • The HTTP dissector now supports dissecting chunked data in
+       streaming reassembly mode. Subdissectors of HTTP can register
+       itself in "streaming_content_type" subdissector table for
+       enabling streaming reassembly mode while transferring in chunked
+       encoding. This feature ensures the server stream messages of
+       GRPC-Web over HTTP/1.1 can be dissected even if the last chunk is
+       absent.
+
+     • The media type dissector table now properly treats media types
+       and subtypes as case-insensitive automatically, per RFC 6838.
+       Media types no longer need to be lower cased before registering
+       or looking up in the table.
+
+   Too many other protocols have been updated to list them all here.
+
+  New and Updated Capture File Support
+
+  New and Updated Codec support
+
+   Adaptive Multi-Rate (AMR), if compiled with opencore-amr[5]
+
+ Getting Wireshark
+
+  Wireshark source code and installation packages are available from
+  https://www.wireshark.org/download.html.
+
+  Vendor-supplied Packages
+
+   Most Linux and Unix vendors supply their own Wireshark packages. You
+   can usually install or upgrade Wireshark using the package management
+   system specific to that platform. A list of third-party packages can
+   be found on the download page[6] on the Wireshark web site.
+
+ File Locations
+
+  Wireshark and TShark look in several different locations for
+  preference files, plugins, SNMP MIBS, and RADIUS dictionaries. These
+  locations vary from platform to platform. You can use "Help › About
+  Wireshark › Folders" or `tshark -G folders` to find the default
+  locations on your system.
+
+ Getting Help
+
+  The User’s Guide, manual pages and various other documentation can be
+  found at https://www.wireshark.org/docs/
+
+  Community support is available on Wireshark’s Q&A site[7] and on the
+  wireshark-users mailing list. Subscription information and archives
+  for all of Wireshark’s mailing lists can be found on the web site[8].
+
+  Bugs and feature requests can be reported on the issue tracker[9].
+
+  You can learn protocol analysis and meet Wireshark’s developers at
+  SharkFest[10].
+
+ How You Can Help
+
+  The Wireshark Foundation helps as many people as possible understand
+  their networks as much as possible. You can find out more and donate
+  at wiresharkfoundation.org[11].
+
+ Frequently Asked Questions
+
+  A complete FAQ is available on the Wireshark web site[12].
+
+ References
+
+   1. https://www.msys2.org/
+   2. https://gitlab.com/wireshark/wireshark/-/issues/18413
+   3. https://gitlab.com/wireshark/wireshark/-/issues/18510
+   4. https://pypi.org/project/pytest/
+   5. https://sourceforge.net/projects/opencore-amr/
+   6. https://www.wireshark.org/download.html
+   7. https://ask.wireshark.org/
+   8. https://www.wireshark.org/lists/
+   9. https://gitlab.com/wireshark/wireshark/-/issues
+  10. https://sharkfest.wireshark.org
+  11. https://wiresharkfoundation.org
+  12. https://www.wireshark.org/faq.html
